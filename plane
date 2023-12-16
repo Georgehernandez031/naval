@@ -20,28 +20,21 @@ local function teleportPlayerAndVehicle(position)
     end
 end
 
--- Function to spam the code
-local function spamCode()
-    for _ = 1, 3 do
-        local args = {
-            [1] = "bomb"
-        }
-        game:GetService("ReplicatedStorage").Event:FireServer(unpack(args))
-        wait(0.5) -- Adjust this wait time as needed
-    end
+-- Function to send the bomb
+local function sendBomb()
+    local args = {
+        [1] = "bomb"
+    }
+    game:GetService("ReplicatedStorage").Event:FireServer(unpack(args))
 end
 
 -- Example coordinate (change this to your desired destination)
 local destination = Vector3.new(-3, 85, -8125)
 
 -- Teleport the player and their vehicle to the specified coordinate
-beef = true
 local startTime = tick()
-while beef and tick() - startTime < 4 do
+while tick() - startTime < 4 do
     wait(0.1)
     teleportPlayerAndVehicle(destination)
+    sendBomb()  -- Send the bomb while teleporting
 end
-beef = false
-
--- Spam the code while the teleportation is happening
-spamCode()
