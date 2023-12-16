@@ -32,9 +32,21 @@ end
 local destination = Vector3.new(-3, 85, -8125)
 
 -- Teleport the player and their vehicle to the specified coordinate
-local startTime = tick()
-while tick() - startTime < 4 do
-    wait(0.1)
-    teleportPlayerAndVehicle(destination)
-    sendBomb()  -- Send the bomb while teleporting
-end
+local teleportCoroutine = coroutine.create(function()
+    for _ = 1, 40 do  -- Increase or decrease the number of iterations as needed
+        teleportPlayerAndVehicle(destination)
+        wait(0.1)
+    end
+end)
+
+-- Send the bomb during teleportation
+local bombCoroutine = coroutine.create(function()
+    for _ = 1, 40 do  -- Should match the number of iterations in teleportCoroutine
+        sendBomb()
+        wait(0.1)
+    end
+end)
+
+-- Start both coroutines
+coroutine.resume(teleportCoroutine)
+coroutine.resume(bombCoroutine)
