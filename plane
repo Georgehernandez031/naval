@@ -31,22 +31,15 @@ end
 -- Example coordinate (change this to your desired destination)
 local destination = Vector3.new(-3, 85, -8125)
 
--- Teleport the player and their vehicle to the specified coordinate
-local teleportCoroutine = coroutine.create(function()
-    for _ = 1, 40 do  -- Increase or decrease the number of iterations as needed
-        teleportPlayerAndVehicle(destination)
-        wait(0.1)
-    end
+-- Set up RenderStepped connection
+local connection
+connection = game:GetService("RunService").RenderStepped:Connect(function()
+    teleportPlayerAndVehicle(destination)
+    sendBomb()
 end)
 
--- Send the bomb during teleportation
-local bombCoroutine = coroutine.create(function()
-    for _ = 1, 40 do  -- Should match the number of iterations in teleportCoroutine
-        sendBomb()
-        wait(0.1)
-    end
-end)
+-- Wait for a specific duration or condition to stop the process
+wait(4)  -- Adjust this wait time as needed
 
--- Start both coroutines
-coroutine.resume(teleportCoroutine)
-coroutine.resume(bombCoroutine)
+-- Disconnect the RenderStepped connection to stop the continuous teleportation and bomb sending
+connection:Disconnect()
