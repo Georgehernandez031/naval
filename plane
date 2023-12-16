@@ -20,8 +20,8 @@ local function teleportPlayerAndVehicle(position)
     end
 end
 
--- Function to spam the code
-local function spamCode()
+-- Function to send bombs
+local function sendBombs()
     for _ = 1, 3 do
         local args = {
             [1] = "bomb"
@@ -34,18 +34,14 @@ end
 -- Example coordinate (change this to your desired destination)
 local destination = Vector3.new(-3, 85, -8125)
 
--- Teleport the player and their vehicle to the specified coordinate
+-- Function to execute teleportation and bombing concurrently
 local function teleportAndBomb()
-    local startTime = tick()
+    -- Start teleportation
     teleportPlayerAndVehicle(destination)
-    
-    while tick() - startTime < 0.3 do
-        wait(0.1)
-        -- Additional logic can be added here if needed during the waiting period
-    end
-    
-    -- Start bombing while still teleporting
-    spamCode()
+
+    -- Create coroutine for bombing
+    local bombCoroutine = coroutine.create(sendBombs)
+    coroutine.resume(bombCoroutine)
 end
 
 -- Start the teleport and bombing process
