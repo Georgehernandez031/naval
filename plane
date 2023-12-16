@@ -5,17 +5,37 @@ local player = game.Players.LocalPlayer
 local function teleportPlayerAndVehicle(position)
     -- Check if the player has a character
     if player.Character then
-        -- Teleport the player's character
-        player.Character:SetPrimaryPartCFrame(CFrame.new(position))
-
-        -- Check if the player is in a vehicle
+        -- Get the player's character
         local character = player.Character
         local humanoid = character:FindFirstChildOfClass("Humanoid")
 
+        -- Check if the player is in a vehicle
         if humanoid.SeatPart then
-            -- Teleport the vehicle
+            -- Get the vehicle
             local vehicle = humanoid.SeatPart.Parent
+
+            -- Create BodyVelocity and BodyGyro to maintain the position in mid-air
+            local bodyVelocity = Instance.new("BodyVelocity")
+            bodyVelocity.Velocity = Vector3.new(0, 50, 0)  -- Adjust the velocity as needed
+            bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)
+            bodyVelocity.Parent = vehicle
+
+            local bodyGyro = Instance.new("BodyGyro")
+            bodyGyro.MaxTorque = Vector3.new(0, math.huge, 0)
+            bodyGyro.Parent = vehicle
+
+            -- Teleport the vehicle
             vehicle:SetPrimaryPartCFrame(CFrame.new(position))
+
+            -- Wait for 4 seconds
+            wait(4)
+
+            -- Remove the BodyVelocity and BodyGyro
+            bodyVelocity:Destroy()
+            bodyGyro:Destroy()
+        else
+            -- If the player is not in a vehicle, simply teleport the character
+            character:SetPrimaryPartCFrame(CFrame.new(position))
         end
     end
 end
@@ -28,21 +48,17 @@ local function sendBomb()
     game:GetService("ReplicatedStorage").Event:FireServer(unpack(args))
 end
 
--- Example coordinates (change these to your desired locations)
+-- Example coordinate (change this to your desired destination)
 local destination = Vector3.new(-3, 85, -8125)
-local originalLocation = Vector3.new(0, 0, 0)
 
 -- Teleport the player and their vehicle to the specified coordinate
 teleportPlayerAndVehicle(destination)
 
--- Wait for 4 seconds
-wait(4)
+-- Wait for 1 second before spamming the bomb
+wait(1)
 
 -- Spam the bomb
 for _ = 1, 3 do
     sendBomb()
     wait(0.5)  -- Adjust this wait time as needed
 end
-
--- Teleport the player and their vehicle back to the original location
-teleportPlayerAndVehicle(originalLocation)
