@@ -1,0 +1,47 @@
+-- Get the LocalPlayer
+local player = game.Players.LocalPlayer
+
+-- Function to teleport a player and their vehicle
+local function teleportPlayerAndVehicle(position)
+    -- Check if the player has a character
+    if player.Character then
+        -- Teleport the player's character
+        player.Character:SetPrimaryPartCFrame(CFrame.new(position))
+
+        -- Check if the player is in a vehicle
+        local character = player.Character
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+        if humanoid.SeatPart then
+            -- Teleport the vehicle
+            local vehicle = humanoid.SeatPart.Parent
+            vehicle:SetPrimaryPartCFrame(CFrame.new(position))
+        end
+    end
+end
+
+-- Function to spam the code
+local function spamCode()
+    for _ = 1, 3 do
+        local args = {
+            [1] = "bomb"
+        }
+        game:GetService("ReplicatedStorage").Event:FireServer(unpack(args))
+        wait(0.5) -- Adjust this wait time as needed
+    end
+end
+
+-- Example coordinate (change this to your desired destination)
+local destination = Vector3.new(-3, 85, -8125)
+
+-- Teleport the player and their vehicle to the specified coordinate
+beef = true
+local startTime = tick()
+while beef and tick() - startTime < 4 do
+    wait(0.1)
+    teleportPlayerAndVehicle(destination)
+end
+beef = false
+
+-- Spam the code while the teleportation is happening
+spamCode()
