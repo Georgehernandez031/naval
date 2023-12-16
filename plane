@@ -31,15 +31,14 @@ end
 -- Example coordinate (change this to your desired destination)
 local destination = Vector3.new(-3, 85, -8125)
 
--- Set up RenderStepped connection
-local connection
-connection = game:GetService("RunService").RenderStepped:Connect(function()
-    teleportPlayerAndVehicle(destination)
+-- Teleport the player and their vehicle to the specified coordinate
+teleportPlayerAndVehicle(destination)
+
+-- Wait for 1 second
+wait(1)
+
+-- Spam the bomb
+for _ = 1, 3 do
     sendBomb()
-end)
-
--- Wait for a specific duration or condition to stop the process
-wait(4)  -- Adjust this wait time as needed
-
--- Disconnect the RenderStepped connection to stop the continuous teleportation and bomb sending
-connection:Disconnect()
+    wait(0.5)  -- Adjust this wait time as needed
+end
