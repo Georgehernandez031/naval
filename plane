@@ -29,7 +29,7 @@ local function sendBomb()
 end
 
 -- Example coordinate (change this to your desired destination)
-local destination = Vector3.new(-3, 85, -8125)
+local destination = Vector3.new(15, 177, 8134)
 
 -- Teleport the player and their vehicle to the specified coordinate
 teleportPlayerAndVehicle(destination)
