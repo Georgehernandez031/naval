@@ -5,37 +5,17 @@ local player = game.Players.LocalPlayer
 local function teleportPlayerAndVehicle(position)
     -- Check if the player has a character
     if player.Character then
-        -- Get the player's character
+        -- Teleport the player's character
+        player.Character:SetPrimaryPartCFrame(CFrame.new(position))
+
+        -- Check if the player is in a vehicle
         local character = player.Character
         local humanoid = character:FindFirstChildOfClass("Humanoid")
 
-        -- Check if the player is in a vehicle
         if humanoid.SeatPart then
-            -- Get the vehicle
-            local vehicle = humanoid.SeatPart.Parent
-
-            -- Create BodyVelocity and BodyGyro to maintain the position in mid-air
-            local bodyVelocity = Instance.new("BodyVelocity")
-            bodyVelocity.Velocity = Vector3.new(0, 50, 0)  -- Adjust the velocity as needed
-            bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)
-            bodyVelocity.Parent = vehicle
-
-            local bodyGyro = Instance.new("BodyGyro")
-            bodyGyro.MaxTorque = Vector3.new(0, math.huge, 0)
-            bodyGyro.Parent = vehicle
-
             -- Teleport the vehicle
+            local vehicle = humanoid.SeatPart.Parent
             vehicle:SetPrimaryPartCFrame(CFrame.new(position))
-
-            -- Wait for 4 seconds
-            wait(4)
-
-            -- Remove the BodyVelocity and BodyGyro
-            bodyVelocity:Destroy()
-            bodyGyro:Destroy()
-        else
-            -- If the player is not in a vehicle, simply teleport the character
-            character:SetPrimaryPartCFrame(CFrame.new(position))
         end
     end
 end
@@ -51,14 +31,15 @@ end
 -- Example coordinate (change this to your desired destination)
 local destination = Vector3.new(-3, 85, -8125)
 
--- Teleport the player and their vehicle to the specified coordinate
-teleportPlayerAndVehicle(destination)
-
--- Wait for 1 second before spamming the bomb
-wait(1)
-
--- Spam the bomb
-for _ = 1, 3 do
+-- Set up RenderStepped connection
+local connection
+connection = game:GetService("RunService").RenderStepped:Connect(function()
+    teleportPlayerAndVehicle(destination)
     sendBomb()
-    wait(0.5)  -- Adjust this wait time as needed
-end
+end)
+
+-- Wait for a specific duration or condition to stop the process
+wait(4)  -- Adjust this wait time as needed
+
+-- Disconnect the RenderStepped connection to stop the continuous teleportation and bomb sending
+connection:Disconnect()
